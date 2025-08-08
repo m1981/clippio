@@ -141,6 +141,21 @@
     console.log('📋 Dropdown toggled:', { taskId, wasOpen, nowOpen: openDropdown });
   }
   
+  function handleTaskRightClick(taskId: string, event: MouseEvent) {
+    console.log('🖱️ Right-click on task:', { taskId });
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Store mouse coordinates
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+    console.log('🖱️ Right-click position stored:', { mouseX, mouseY });
+    
+    // Open context menu for this task
+    openDropdown = taskId;
+    console.log('📋 Context menu opened via right-click:', { taskId });
+  }
+  
   function handleClickOutside(event: MouseEvent) {
     if (openDropdown) {
       console.log('🖱️ Click outside detected, dropdown was open:', openDropdown);
