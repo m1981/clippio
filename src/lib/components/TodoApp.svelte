@@ -2,7 +2,7 @@
 <script lang="ts">
   import { createCollapsible } from "@melt-ui/svelte";
   import { ChevronRight, MoreVertical, Edit, Trash2, Check, Clock } from "lucide-svelte";
-
+11
   interface Task {
     id: string;
     title: string;
@@ -85,55 +85,95 @@
   let mouseX = $state(0);
   let mouseY = $state(0);
 
-  // Add after existing state
+  // Add after existing state declarations
   let newTaskTitle = $state('');
   let showSuggestions = $state(false);
   let suggestedProject = $state<Project | null>(null);
 
-  // Smart project assignment logic
-  function analyzeTaskForProject(title: string): Project | null {
+  // Enhanced suggestion state
+  let aiSuggestion = $state<{
+    project: string;
+    confidence: number;
+    reasoning: string;
+    alternatives: string[];
+  } | null>(null);
+
+  // Mock AI response for testing (replace with real API later)
+  function mockAIResponse(title: string) {
     const lowerTitle = title.toLowerCase();
     
-    // Define keyword mappings
-    const projectKeywords = {
-      'work': ['work', 'meeting', 'presentation', 'client', 'deadline', 'review', 'bug', 'code', 'deploy'],
-      'personal': ['kids', 'family', 'home', 'grocery', 'doctor', 'dentist', 'vacation', 'personal'],
-      'other': [] // fallback
-    };
-    
-    // Find matching project
-    for (const [projectType, keywords] of Object.entries(projectKeywords)) {
-      if (keywords.some(keyword => lowerTitle.includes(keyword))) {
-        return projects.find(p => p.name.toLowerCase().includes(projectType)) || null;
-      }
-    }
-    
-    // Default to "Other" project or create one
-    let otherProject = projects.find(p => p.name.toLowerCase() === 'other');
-    if (!otherProject) {
-      otherProject = {
-        id: Date.now().toString(),
-        name: 'Other',
-        tasks: [],
-        open: true
+    if (lowerTitle.includes('work') || lowerTitle.includes('bug') || lowerTitle.includes('meeting')) {
+      return {
+        suggestedProject: 'Work Projects',
+        confidence: 0.85,
+        reasoning: 'Contains work-related keywords',
+        alternativeProjects: ['Personal'],
+        shouldCreateNew: false
       };
-      projects.push(otherProject);
+    } else if (lowerTitle.includes('kids') || lowerTitle.includes('family') || lowerTitle.includes('grocery')) {
+      return {
+        suggestedProject: 'Personal',
+        confidence: 0.90,
+        reasoning: 'Contains personal/family keywords',
+        alternativeProjects: ['Other'],
+        shouldCreateNew: false
+      };
+    } else {
+      return {
+        suggestedProject: 'Other',
+        confidence: 0.60,
+        reasoning: 'No specific keywords found, defaulting to Other',
+        alternativeProjects: ['Work Projects', 'Personal'],
+        shouldCreateNew: false
+      };
     }
-    
-    return otherProject;
   }
 
   function handleTaskInput() {
+    console.log('📝 Task input changed:', newTaskTitle);
+    
     if (newTaskTitle.trim().length > 3) {
-      suggestedProject = analyzeTaskForProject(newTaskTitle);
+      // Mock AI analysis
+      const aiResponse = mockAIResponse(newTaskTitle);
+      
+      // Find the suggested project
+      suggestedProject = projects.find(p => 
+        p.name.toLowerCase() === aiResponse.suggestedProject.toLowerCase()
+      ) || null;
+      
+      // Create "Other" project if it doesn't exist and is suggested
+      if (!suggestedProject && aiResponse.suggestedProject === 'Other') {
+        const otherProject = {
+          id: Date.now().toString(),
+          name: 'Other',
+          tasks: [],
+          open: true
+        };
+        projects.push(otherProject);
+        suggestedProject = otherProject;
+      }
+      
+      // Store AI insights
+      aiSuggestion = {
+        project: aiResponse.suggestedProject,
+        confidence: aiResponse.confidence,
+        reasoning: aiResponse.reasoning,
+        alternatives: aiResponse.alternativeProjects
+      };
+      
       showSuggestions = !!suggestedProject;
+      console.log('💡 Suggestion generated:', { suggestedProject: suggestedProject?.name, showSuggestions });
     } else {
       showSuggestions = false;
       suggestedProject = null;
+      aiSuggestion = null;
+      console.log('❌ Input too short, hiding suggestions');
     }
   }
 
   function addTask(projectId?: string) {
+    console.log('➕ Adding task:', { title: newTaskTitle, projectId });
+    
     if (!newTaskTitle.trim()) return;
     
     const targetProject = projectId 
@@ -149,11 +189,15 @@
       };
       
       targetProject.tasks.push(newTask);
+      console.log('✅ Task added to project:', { projectName: targetProject.name, taskTitle: newTask.title });
       
       // Reset form
       newTaskTitle = '';
       showSuggestions = false;
       suggestedProject = null;
+      aiSuggestion = null;
+    } else {
+      console.error('❌ No target project found');
     }
   }
   
@@ -258,17 +302,38 @@
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       
-      <!-- Smart Suggestion -->
-      {#if showSuggestions && suggestedProject}
-        <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span class="text-sm text-blue-800">
-                Suggested for: <strong>{suggestedProject.name}</strong>
-              </span>
+      <!-- Enhanced Smart Suggestion with AI insights -->
+      {#if showSuggestions && suggestedProject && aiSuggestion}
+        <div class="mt-2 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-md">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span class="text-sm font-medium text-blue-800">
+                  AI suggests: <strong>{suggestedProject.name}</strong>
+                </span>
+                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
+                  {Math.round(aiSuggestion.confidence * 100)}% confident
+                </span>
+              </div>
+              <p class="text-xs text-blue-600 mb-2">{aiSuggestion.reasoning}</p>
+              
+              {#if aiSuggestion.alternatives.length > 0}
+                <div class="flex gap-1 flex-wrap">
+                  <span class="text-xs text-gray-500">Also consider:</span>
+                  {#each aiSuggestion.alternatives as alt}
+                    <button
+                      onclick={() => addTask(projects.find(p => p.name === alt)?.id)}
+                      class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded hover:bg-gray-200"
+                    >
+                      {alt}
+                    </button>
+                  {/each}
+                </div>
+              {/if}
             </div>
-            <div class="flex gap-2">
+            
+            <div class="flex gap-2 ml-3">
               <button
                 onclick={() => addTask(suggestedProject?.id)}
                 class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
