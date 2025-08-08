@@ -27,7 +27,14 @@
   ]);
   
   function handleTaskAdded(task: Task, projectId: string) {
+    console.log('🔴 TodoApp: handleTaskAdded called');
+    console.log('🔴 Task:', task);
+    console.log('🔴 ProjectId:', projectId);
+    console.log('🔴 Current projects:', todoStore.getProjects().map(p => ({ id: p.id, name: p.name })));
+    
     todoStore.addTask(task, projectId);
+    console.log('🔴 Store addTask called');
+    console.log('🔴 Updated projects:', todoStore.getProjects().map(p => ({ name: p.name, taskCount: p.tasks.length })));
   }
   
   function handleTaskToggle(projectId: string, taskId: string) {

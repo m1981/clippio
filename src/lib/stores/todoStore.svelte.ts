@@ -12,9 +12,28 @@ export class TodoStore {
   }
 
   addTask(task: Task, projectId: string) {
-    const project = this.projects.find(p => p.id === projectId);
+    console.log('🟠 Store: addTask called');
+    console.log('🟠 Looking for project with ID/name:', projectId);
+    console.log('🟠 Available projects:', this.projects.map(p => ({ id: p.id, name: p.name })));
+    
+    // Try to find by name first (since we're passing project name, not ID)
+    let project = this.projects.find(p => p.name === projectId);
+    
+    if (!project) {
+      // Fallback to ID search
+      project = this.projects.find(p => p.id === projectId);
+    }
+    
     if (project) {
+      console.log('🟠 Found project:', project.name);
+      console.log('🟠 Current tasks:', project.tasks.length);
       project.tasks.push(task);
+      console.log('🟠 Tasks after adding:', project.tasks.length);
+      
+      // Force reactivity by creating new array reference
+      this.projects = [...this.projects];
+    } else {
+      console.error('🟠 Project not found!');
     }
   }
 

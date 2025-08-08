@@ -11,29 +11,34 @@
   let { tasks, projectId, onTaskToggle, onTaskDelete }: Props = $props();
 </script>
 
-<div class="p-4 border-t">
+<div class="border-t border-gray-200">
   {#if tasks.length === 0}
-    <p class="text-gray-500 text-sm italic">No tasks yet</p>
+    <div class="p-4 text-center text-gray-500 text-sm">
+      No tasks yet. Add one above!
+    </div>
   {:else}
-    <div class="space-y-2">
+    <div class="divide-y divide-gray-100">
       {#each tasks as task}
-        <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+        <div class="flex items-center gap-3 p-4 hover:bg-gray-50">
           <input
             type="checkbox"
             checked={task.completed}
             onchange={() => onTaskToggle(projectId, task.id)}
             class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
           />
-          <span class="flex-1 {task.completed ? 'line-through text-gray-500' : ''}">
+          
+          <span class="flex-1 {task.completed ? 'line-through text-gray-500' : 'text-gray-900'}">
             {task.title}
           </span>
-          <span class="px-2 py-1 text-xs rounded {
+          
+          <span class="px-2 py-1 text-xs rounded-full {
             task.priority === 'high' ? 'bg-red-100 text-red-700' :
             task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
             'bg-green-100 text-green-700'
           }">
             {task.priority}
           </span>
+          
           <button
             onclick={() => onTaskDelete(projectId, task.id)}
             class="text-red-500 hover:text-red-700 text-sm"

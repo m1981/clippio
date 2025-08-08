@@ -15,7 +15,7 @@
   // Mock AI response for testing
   function mockAIResponse(title: string): TaskSuggestion {
     const lowerTitle = title.toLowerCase();
-
+    
     if (lowerTitle.includes('work') || lowerTitle.includes('bug') || lowerTitle.includes('meeting')) {
       return {
         suggestedProject: 'Work Projects',
@@ -42,7 +42,7 @@
       };
     }
   }
-
+  
   function handleInput() {
     if (newTaskTitle.trim().length > 3) {
       suggestion = mockAIResponse(newTaskTitle);
@@ -50,9 +50,16 @@
       suggestion = null;
     }
   }
-
+  
   function handleTaskAdded(task: Task, projectId: string) {
+    console.log('🟢 TaskInput: handleTaskAdded called');
+    console.log('🟢 Task:', task);
+    console.log('🟢 ProjectId:', projectId);
+    console.log('🟢 Available projects:', projects.map(p => p.name));
+    
     onTaskAdded(task, projectId);
+    console.log('🟢 Bubbled up to TodoApp');
+    
     newTaskTitle = '';
     suggestion = null;
   }
@@ -62,8 +69,8 @@
   <input
     bind:value={newTaskTitle}
     oninput={handleInput}
-    placeholder="Add a new task..."
-    class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+    placeholder="Add a new task... (try 'fix work bug' or 'pick up kids')"
+    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
   />
   
   {#if suggestion}

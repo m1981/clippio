@@ -9,6 +9,9 @@
   let { suggestion, onTaskAdded }: Props = $props();
   
   function addToSuggestedProject() {
+    console.log('🔵 TaskSuggestion: addToSuggestedProject called');
+    console.log('🔵 Suggestion:', suggestion);
+    
     const newTask: Task = {
       id: Date.now().toString(),
       title: suggestion.taskTitle || '',
@@ -16,7 +19,11 @@
       priority: 'medium'
     };
     
+    console.log('🔵 Created task:', newTask);
+    console.log('🔵 Target project:', suggestion.suggestedProject);
+    
     onTaskAdded(newTask, suggestion.suggestedProject);
+    console.log('🔵 onTaskAdded called');
   }
 </script>
 
@@ -40,6 +47,7 @@
           {#each suggestion.alternatives as alt}
             <button
               onclick={() => {
+                console.log('🟡 Alternative button clicked:', alt);
                 const task: Task = {
                   id: Date.now().toString(),
                   title: suggestion.taskTitle || '',
