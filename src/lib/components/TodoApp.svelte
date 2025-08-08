@@ -84,6 +84,78 @@
   let openDropdown = $state<string | null>(null);
   let mouseX = $state(0);
   let mouseY = $state(0);
+
+  // Add after existing state
+  let newTaskTitle = $state('');
+  let showSuggestions = $state(false);
+  let suggestedProject = $state<Project | null>(null);
+
+  // Smart project assignment logic
+  function analyzeTaskForProject(title: string): Project | null {
+    const lowerTitle = title.toLowerCase();
+    
+    // Define keyword mappings
+    const projectKeywords = {
+      'work': ['work', 'meeting', 'presentation', 'client', 'deadline', 'review', 'bug', 'code', 'deploy'],
+      'personal': ['kids', 'family', 'home', 'grocery', 'doctor', 'dentist', 'vacation', 'personal'],
+      'other': [] // fallback
+    };
+    
+    // Find matching project
+    for (const [projectType, keywords] of Object.entries(projectKeywords)) {
+      if (keywords.some(keyword => lowerTitle.includes(keyword))) {
+        return projects.find(p => p.name.toLowerCase().includes(projectType)) || null;
+      }
+    }
+    
+    // Default to "Other" project or create one
+    let otherProject = projects.find(p => p.name.toLowerCase() === 'other');
+    if (!otherProject) {
+      otherProject = {
+        id: Date.now().toString(),
+        name: 'Other',
+        tasks: [],
+        open: true
+      };
+      projects.push(otherProject);
+    }
+    
+    return otherProject;
+  }
+
+  function handleTaskInput() {
+    if (newTaskTitle.trim().length > 3) {
+      suggestedProject = analyzeTaskForProject(newTaskTitle);
+      showSuggestions = !!suggestedProject;
+    } else {
+      showSuggestions = false;
+      suggestedProject = null;
+    }
+  }
+
+  function addTask(projectId?: string) {
+    if (!newTaskTitle.trim()) return;
+    
+    const targetProject = projectId 
+      ? projects.find(p => p.id === projectId)
+      : suggestedProject;
+      
+    if (targetProject) {
+      const newTask: Task = {
+        id: Date.now().toString(),
+        title: newTaskTitle.trim(),
+        completed: false,
+        priority: 'medium'
+      };
+      
+      targetProject.tasks.push(newTask);
+      
+      // Reset form
+      newTaskTitle = '';
+      showSuggestions = false;
+      suggestedProject = null;
+    }
+  }
   
   function toggleTask(projectId: string, taskId: string) {
     console.log('✅ toggleTask called:', { projectId, taskId });
@@ -174,6 +246,61 @@
 
 <div class="max-w-2xl mx-auto p-6 space-y-4">
   <h1 class="text-2xl font-bold text-gray-900">Todo Projects</h1>
+  
+  <!-- Smart Task Input -->
+  <div class="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+    <div class="relative">
+      <input
+        bind:value={newTaskTitle}
+        oninput={handleTaskInput}
+        onkeydown={(e) => e.key === 'Enter' && addTask()}
+        placeholder="Add a new task... (e.g., 'Fix work bug' or 'Pick up kids')"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+      
+      <!-- Smart Suggestion -->
+      {#if showSuggestions && suggestedProject}
+        <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span class="text-sm text-blue-800">
+                Suggested for: <strong>{suggestedProject.name}</strong>
+              </span>
+            </div>
+            <div class="flex gap-2">
+              <button
+                onclick={() => addTask(suggestedProject?.id)}
+                class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+              >
+                Add Here
+              </button>
+              <button
+                onclick={() => showSuggestions = false}
+                class="px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300"
+              >
+                Choose Different
+              </button>
+            </div>
+          </div>
+        </div>
+      {/if}
+      
+      <!-- Manual Project Selection (when suggestion dismissed) -->
+      {#if newTaskTitle.trim() && !showSuggestions}
+        <div class="mt-2 flex gap-2 flex-wrap">
+          {#each projects as project}
+            <button
+              onclick={() => addTask(project.id)}
+              class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 border"
+            >
+              Add to {project.name}
+            </button>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  </div>
   
   <hr class="my-8" />
   
