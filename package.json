@@ -17,7 +17,7 @@
 		"test:e2e": "playwright test",
 		"test:e2e:local": "playwright test --ui -project=iphone-11",
 		"test:e2e:ci_base": "playwright test --project=iphone-11 --grep 'TodoApp - Basic Functionality'",
-		"test:visual": "playwright test --grep '@visual'",
+		"test:visual": "playwright test --grep '@visual' -project=iphone-11",
 		"test:visual:update": "playwright test --grep '@visual' --update-snapshots",
 		"test:visual:ui": "playwright test --grep '@visual' --ui -project=iphone-11",
 		"db:push": "drizzle-kit push",
