@@ -90,7 +90,7 @@
     {#each tasks as task}
       <div 
         class="flex items-center gap-3 p-4 hover:bg-gray-50 group relative"
-        role="listitem"
+        role="button"
         tabindex="0"
         oncontextmenu={(e) => handleTaskRightClick(task.id, e)}
         onkeydown={(e) => handleTaskKeydown(task.id, e)}

@@ -179,3 +179,49 @@ expect(await task.locator('input').isChecked()).toBe(true);
 expect(await task.locator('[data-testid="task-title"]').evaluate(el => 
   getComputedStyle(el).textDecoration.includes('line-through')
 )).toBe(true);
+```
+
+
+
+## 19. Avoid Nested Interactive Elements and Use Proper ARIA Roles
+
+HTML doesn't allow nested interactive elements like buttons inside buttons. Use semantic structure with proper ARIA roles instead.
+
+```typescript
+// ❌ Nested buttons cause HTML validation errors
+<button class="task-row">
+  <span>Task title</span>
+  <button>Menu</button> // Invalid nesting
+</button>
+
+// ✅ Use div with interactive role
+<div 
+  role="button"
+  tabindex="0"
+  onkeydown={handleKeydown}
+  onclick={handleClick}
+  aria-label="Task: Buy groceries"
+>
+  <span>Task title</span>
+  <button>Menu</button> // Valid - button inside div
+</div>
+
+// ✅ Or use proper semantic structure
+<li>
+  <div 
+    role="button"
+    tabindex="0"
+    aria-label="Task: Buy groceries"
+  >
+    <span>Task title</span>
+    <button aria-label="Open menu">⋮</button>
+  </div>
+</li>
+```
+
+**Key Rules:**
+- Interactive roles (`button`, `link`, `menuitem`) allow `tabindex` and event listeners
+- Semantic roles (`listitem`, `heading`) don't allow interactive behavior
+- Use `role="button"` on divs that need click/keyboard interaction
+- Always include `aria-label` for screen readers
+- Test with keyboard navigation (`Tab`, `Enter`, `Space`)
