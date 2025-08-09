@@ -1,0 +1,6 @@
+test-results
+playwright-report
+node_modules
+.svelte-kit
+.idea
+.storybook

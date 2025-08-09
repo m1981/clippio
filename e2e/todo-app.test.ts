@@ -81,8 +81,12 @@ test.describe('TodoApp - Basic Functionality', () => {
     const taskTitle = testTasks.work.highPriority.title;
     
     // Ensure work project is expanded before looking for task
-    await todoPageWithTasks.ensureProjectExpanded(taskTitle);
-
+    const workExpanded = await todoPageWithTasks.isProjectExpanded('work');
+    if (!workExpanded) {
+      await todoPageWithTasks.toggleProject('work');
+      await todoPageWithTasks.page.waitForTimeout(500);
+    }
+    
     // Verify task exists first
     const task = await todoPageWithTasks.getTaskByTitle(taskTitle);
     await expect(task).toBeVisible();

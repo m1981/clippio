@@ -149,3 +149,33 @@ test('admin can manage inventory @admin @regression', async ({ page }) => {
 
 // Run with: npx playwright test --grep "@smoke"
 ```
+
+## 18. Create Custom Matchers for Domain Logic
+```typescript
+// Custom matchers make tests more readable and maintainable
+export const todoMatchers = {
+  async toBeCompletedTask(locator: Locator) {
+    const checkbox = locator.locator('input[type="checkbox"]');
+    const isChecked = await checkbox.isChecked();
+    const titleElement = locator.locator('[data-testid="task-title"]');
+    const hasStrikethrough = await titleElement.evaluate(el => 
+      getComputedStyle(el).textDecoration.includes('line-through')
+    );
+    
+    return {
+      pass: isChecked && hasStrikethrough,
+      message: () => `Expected task to be completed (checked and strikethrough)`
+    };
+  }
+};
+
+expect.extend(todoMatchers);
+
+// Usage in tests - more readable than generic assertions
+await expect(task).toBeCompletedTask();
+
+// Instead of:
+expect(await task.locator('input').isChecked()).toBe(true);
+expect(await task.locator('[data-testid="task-title"]').evaluate(el => 
+  getComputedStyle(el).textDecoration.includes('line-through')
+)).toBe(true);
