@@ -8,11 +8,20 @@
   }
   
   let { project, isOpen, onToggle }: Props = $props();
+  
+  // For more complex derived logic, use $derived.by()
+  let testId = $derived.by(() => {
+    const slug = project.slug || project.name.toLowerCase().replace(/\s+/g, '-');
+    return `project-header-${slug}`;
+  });
 </script>
 
 <button 
   onclick={onToggle}
   class="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+  aria-expanded={isOpen}
+  aria-label="Toggle {project.name} project"
+  data-testid={testId}
 >
   <div class="flex items-center gap-3">
     <span class="w-4 h-4 transition-transform {isOpen ? 'rotate-90' : ''} text-gray-500">

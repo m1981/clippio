@@ -23,8 +23,9 @@ export class TodoPage {
     this.projectList = page.locator(selectors.projectList);
     this.aiSuggestion = page.locator(selectors.aiSuggestion);
     
-    this.workProjectsHeader = page.getByRole('button', { name: /Work Projects/ });
-    this.personalProjectsHeader = page.getByRole('button', { name: /Personal/ });
+    // Update to match actual generated test IDs
+    this.workProjectsHeader = page.locator('[data-testid="project-header-work-projects"]');
+    this.personalProjectsHeader = page.locator('[data-testid="project-header-personal"]');
   }
 
   async goto() {
@@ -56,13 +57,14 @@ export class TodoPage {
   }
 
   async getTaskByTitle(title: string) {
-    // Use listitem role instead of missing data-testid
+    // Remove the expansion call from here to avoid double-expansion
     return this.page.getByRole('listitem').filter({ hasText: title });
   }
 
   async toggleTask(title: string) {
+    // Ensure project is expanded before trying to interact with task
+    await this.ensureProjectExpanded(title);
     const task = await this.getTaskByTitle(title);
-    // Use actual checkbox selector instead of missing data-testid
     await task.locator('input[type="checkbox"]').click();
   }
 
@@ -83,7 +85,10 @@ export class TodoPage {
 
   async setTaskPriority(title: string, priority: 'high' | 'medium' | 'low') {
     await this.openTaskContextMenu(title);
-    await this.page.locator(selectors[`priority${priority.charAt(0).toUpperCase() + priority.slice(1)}` as keyof typeof selectors]).click();
+    const prioritySelector = priority === 'high' ? selectors.priorityHigh :
+                           priority === 'medium' ? selectors.priorityMedium :
+                           selectors.priorityLow;
+    await this.page.locator(prioritySelector).click();
   }
 
   async toggleProject(project: 'work' | 'personal') {
@@ -92,15 +97,68 @@ export class TodoPage {
   }
 
   async getTaskCount(project: 'work' | 'personal'): Promise<number> {
-    const projectHeader = project === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
-    const text = await projectHeader.textContent();
-    const match = text?.match(/(\d+) tasks/);
-    return match ? parseInt(match[1]) : 0;
+    const projectSelector = project === 'work' ? 
+      '[data-testid="project-header-work"]' : 
+      '[data-testid="project-header-personal"]';
+    
+    const countElement = this.page.locator(projectSelector).locator(selectors.taskCount);
+    const countText = await countElement.textContent();
+    return parseInt(countText?.match(/\d+/)?.[0] || '0');
   }
 
   async isProjectExpanded(project: 'work' | 'personal'): Promise<boolean> {
     const projectHeader = project === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
-    const text = await projectHeader.textContent();
-    return text?.includes('▼') || false;
+    
+    // Now we can reliably use aria-expanded
+    const ariaExpanded = await projectHeader.getAttribute('aria-expanded');
+    return ariaExpanded === 'true';
+  }
+
+  async waitForTaskToAppear(title: string, timeout = 5000) {
+    // Only expand once, don't call getTaskByTitle which would expand again
+    await this.ensureProjectExpanded(title);
+    
+    // Get the task directly without additional expansion calls
+    const task = this.page.getByRole('listitem').filter({ hasText: title });
+    await expect(task).toBeVisible({ timeout });
+    return task;
+  }
+
+  async ensureProjectExpanded(taskTitle: string) {
+    const personalTasks = ['Buy groceries', 'Go for a run', 'Pay electricity bill'];
+    const isPersonalTask = personalTasks.includes(taskTitle);
+    
+    const project = isPersonalTask ? 'personal' : 'work';
+    const isExpanded = await this.isProjectExpanded(project);
+    
+    console.log(`Project ${project} expanded: ${isExpanded} for task: ${taskTitle}`);
+    
+    if (!isExpanded) {
+      console.log(`Expanding ${project} project...`);
+      await this.toggleProject(project);
+      await this.page.waitForTimeout(500); // Increase wait time
+      
+      // Verify expansion worked
+      const nowExpanded = await this.isProjectExpanded(project);
+      console.log(`After toggle, ${project} expanded: ${nowExpanded}`);
+    }
+  }
+
+  async isTaskCompleted(title: string): Promise<boolean> {
+    const task = await this.getTaskByTitle(title);
+    const checkbox = task.locator('input[type="checkbox"]');
+    return await checkbox.isChecked();
+  }
+
+  async editTaskTitle(oldTitle: string, newTitle: string) {
+    await this.openTaskContextMenu(oldTitle);
+    await this.page.locator(selectors.editTaskOption).click();
+    
+    // Wait for edit mode
+    const editInput = this.page.locator('[data-testid="task-edit-input"]');
+    await expect(editInput).toBeVisible();
+    
+    await editInput.fill(newTitle);
+    await editInput.press('Enter');
   }
 }
