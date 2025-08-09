@@ -31,7 +31,7 @@ export const selectors = {
   taskItem: '[data-testid="task-item"]',
   taskCheckbox: '[data-testid="task-checkbox"]',
   taskTitle: '[data-testid="task-title"]',
-  taskMenuButton: '[data-testid="task-menu-button"]',
+  taskMenuButton: 'button[aria-label*="Open task menu"]',
   taskEditInput: '[data-testid="task-edit-input"]',
   
   // Project-related selectors - use semantic names
@@ -53,9 +53,9 @@ export const selectors = {
   suggestionLoading: '[data-testid="suggestion-loading"]',
 
   // Context menu selectors
-  contextMenu: '[data-testid="context-menu"]',
-  deleteTaskOption: '[data-testid="delete-task-option"]',
-  editTaskOption: '[data-testid="edit-task-option"]',
+  contextMenu: '.dropdown-menu',
+  deleteTaskOption: 'button:has-text("Delete task")',
+  editTaskOption: 'button:has-text("Edit task")',
   priorityHigh: '[data-testid="priority-high"]',
   priorityMedium: '[data-testid="priority-medium"]',
   priorityLow: '[data-testid="priority-low"]',

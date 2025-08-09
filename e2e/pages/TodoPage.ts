@@ -70,7 +70,19 @@ export class TodoPage {
 
   async openTaskContextMenu(title: string) {
     const task = await this.getTaskByTitle(title);
-    await task.locator(selectors.taskMenuButton).click();
+    
+    // Hover over the task container to reveal the menu button
+    await task.hover();
+    
+    // Wait for the menu button to become visible
+    const menuButton = task.locator('button[aria-label*="Open task menu"]');
+    await expect(menuButton).toBeVisible();
+    
+    // Click the menu button
+    await menuButton.click();
+    
+    // Wait for context menu to appear
+    await expect(this.page.locator('.dropdown-menu')).toBeVisible();
   }
 
   async rightClickTask(title: string) {

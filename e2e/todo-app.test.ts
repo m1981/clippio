@@ -80,6 +80,9 @@ test.describe('TodoApp - Basic Functionality', () => {
   test('should delete a task', async ({ todoPageWithTasks }) => {
     const taskTitle = testTasks.work.highPriority.title;
     
+    // Ensure work project is expanded before looking for task
+    await todoPageWithTasks.ensureProjectExpanded(taskTitle);
+
     // Verify task exists first
     const task = await todoPageWithTasks.getTaskByTitle(taskTitle);
     await expect(task).toBeVisible();
