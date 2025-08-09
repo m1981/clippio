@@ -53,6 +53,22 @@ export class TodoStore {
       project.tasks = project.tasks.filter(t => t.id !== taskId);
     }
   }
+
+  editTask(projectId: string, taskId: string) {
+    console.log('✏️ editTask called:', { projectId, taskId });
+    // TODO: Implement task editing functionality
+  }
+
+  setPriority(projectId: string, taskId: string, priority: Task['priority']) {
+    console.log('🎯 setPriority called:', { projectId, taskId, priority });
+    const project = this.projects.find(p => p.id === projectId);
+    const task = project?.tasks.find(t => t.id === taskId);
+    if (task) {
+      const oldPriority = task.priority;
+      task.priority = priority;
+      console.log('🎯 Priority changed:', { taskId, from: oldPriority, to: priority });
+    }
+  }
 }
 
 export function createTodoStore(initialProjects: Project[] = []): TodoStore {

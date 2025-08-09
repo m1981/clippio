@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Project } from '$lib/types';
+  import type { Project, Task } from '$lib/types';
   import TaskList from './TaskList.svelte';
   import ProjectHeader from './ProjectHeader.svelte';
   
@@ -7,9 +7,11 @@
     project: Project;
     onTaskToggle: (projectId: string, taskId: string) => void;
     onTaskDelete: (projectId: string, taskId: string) => void;
+    onTaskEdit?: (projectId: string, taskId: string) => void;
+    onTaskSetPriority?: (projectId: string, taskId: string, priority: Task['priority']) => void;
   }
   
-  let { project, onTaskToggle, onTaskDelete }: Props = $props();
+  let { project, onTaskToggle, onTaskDelete, onTaskEdit, onTaskSetPriority }: Props = $props();
   
   // Simple state management without Melt UI for now
   let isOpen = $state(project.open);
@@ -45,6 +47,8 @@
       projectId={project.id}
       {onTaskToggle}
       {onTaskDelete}
+      {onTaskEdit}
+      {onTaskSetPriority}
     />
   {/if}
 </div>

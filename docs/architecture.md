@@ -12,69 +12,33 @@ The application is structured using a layered architecture with clear separation
 - **Data Layer**: State management and data models
 - **Types Layer**: TypeScript interfaces and type definitions
 
-## Class Diagram
+## Current Implementation Status
+
+### ✅ Implemented Components
+- **TodoApp**: Main orchestrator ✓
+- **TaskInput**: Task creation with AI suggestions ✓  
+- **ProjectList**: Renders project list ✓
+- **ProjectHeader**: Project header with toggle ✓
+- **TaskList**: Task rendering and interactions ✓
+- **TaskSuggestion**: AI suggestion display ✓
+- **TodoStore**: State management ✓
+
+### ⚠️ Simplified from Architecture
+- **No Factory Pattern**: Direct instantiation used for simplicity
+- **No Service Interface**: Mock function used instead of service classes
+- **No Melt UI**: Replaced with simple onclick handlers for reliability
+- **No ProjectCard**: ProjectList directly manages header/tasks
+
+### ❌ Not Yet Implemented  
+- **TaskSuggestionService Interface**: Should be added for extensibility
+- **AnthropicTaskSuggestionService**: Planned for production AI integration
+- **Factory Functions**: Could be added for better testability
+
+## Updated Class Diagram
 
 ```mermaid
 classDiagram
-    %% Types/Interfaces
-    class Task {
-        +string id
-        +string title
-        +boolean completed
-        +string priority
-        +string dueDate
-    }
-
-    class Project {
-        +string id
-        +string name
-        +Task[] tasks
-        +boolean open
-    }
-
-    class TaskSuggestion {
-        +string suggestedProject
-        +number confidence
-        +string reasoning
-        +string[] alternatives
-    }
-
-    class TaskInputEvents {
-        <<interface>>
-        +onTaskAdded(task Task, projectId string)
-    }
-
-    class ProjectEvents {
-        <<interface>>
-        +onTaskToggle(projectId string, taskId string)
-        +onTaskDelete(projectId string, taskId string)
-    }
-
-    %% Service Layer
-    class TaskSuggestionService {
-        <<interface>>
-        +getSuggestion(title string, projects Project[]) TaskSuggestion
-    }
-
-    class MockTaskSuggestionService {
-        +getSuggestion(title string, projects Project[]) TaskSuggestion
-    }
-
-    class AnthropicTaskSuggestionService {
-        +getSuggestion(title string, projects Project[]) TaskSuggestion
-    }
-
-    %% Store Layer
-    class TodoStore {
-        -Project[] projects
-        +TodoStore(initialProjects Project[])
-        +getProjects() Project[]
-        +addTask(task Task, projectId string)
-        +toggleTask(projectId string, taskId string)
-        +deleteTask(projectId string, taskId string)
-    }
-
-    %% Component Layer
+    %% Current Implementation
     class TodoApp {
         -TodoStore todoStore
         +handleTaskAdded(task Task, projectId string)
@@ -84,123 +48,92 @@ classDiagram
 
     class TaskInput {
         +Project[] projects
-        +TaskInputEvents onTaskAdded
+        +function onTaskAdded
         -string newTaskTitle
         -TaskSuggestion suggestion
         +handleInput()
+        +mockAIResponse(title string) TaskSuggestion
     }
 
     class ProjectList {
         +Project[] projects
-        +ProjectEvents onTaskToggle
-        +ProjectEvents onTaskDelete
+        +function onTaskToggle
+        +function onTaskDelete
     }
 
-    class ProjectCard {
+    class ProjectHeader {
         +Project project
-        +ProjectEvents onTaskToggle
-        +ProjectEvents onTaskDelete
-        -CollapsibleElements elements
-        -CollapsibleStates states
+        +boolean isOpen
+        +function onToggle
     }
 
     class TaskList {
         +Task[] tasks
         +string projectId
-        +ProjectEvents onTaskToggle
-        +ProjectEvents onTaskDelete
+        +function onTaskToggle
+        +function onTaskDelete
     }
 
-    class ProjectHeader {
-        +Project project
-        +CollapsibleTrigger trigger
-        +boolean isOpen
-    }
-
-    class TaskSuggestionComponent {
+    class TaskSuggestion {
         +TaskSuggestion suggestion
-        +TaskInputEvents onTaskAdded
+        +function onTaskAdded
     }
 
-    %% Factory Functions
-    class TaskSuggestionFactory {
-        <<factory>>
-        +createTaskSuggestion(title string, projects Project[]) TaskSuggestion
-    }
-
-    class TodoStoreFactory {
-        <<factory>>
-        +createTodoStore(initialProjects Project[]) TodoStore
-    }
-
-    %% External Dependencies
-    class MeltUI {
-        <<external>>
-        +createCollapsible()
-    }
-
-    class AnthropicAPI {
-        <<external>>
-        +messagesCreate()
+    class TodoStore {
+        -Project[] projects
+        +getProjects() Project[]
+        +addTask(task Task, projectId string)
+        +toggleTask(projectId string, taskId string)
+        +deleteTask(projectId string, taskId string)
     }
 
     %% Relationships
-    Project "1" *-- "many" Task : contains
-    TodoStore "1" *-- "many" Project : manages
-    
-    TaskSuggestionService <|.. MockTaskSuggestionService : implements
-    TaskSuggestionService <|.. AnthropicTaskSuggestionService : implements
-    
     TodoApp --> TodoStore : uses
     TodoApp --> TaskInput : renders
     TodoApp --> ProjectList : renders
     
-    TaskInput --> TaskSuggestionFactory : uses
-    TaskInput --> TaskSuggestionComponent : renders
-    TaskInput ..|> TaskInputEvents : implements
+    TaskInput --> TaskSuggestion : renders
+    TaskInput --> TodoApp : calls onTaskAdded
     
-    ProjectList --> ProjectCard : renders
-    ProjectCard --> TaskList : renders
-    ProjectCard --> ProjectHeader : renders
-    ProjectCard --> MeltUI : uses
-    ProjectCard ..|> ProjectEvents : implements
+    ProjectList --> ProjectHeader : renders
+    ProjectList --> TaskList : renders
     
-    TaskList ..|> ProjectEvents : implements
-    
-    MockTaskSuggestionService --> TaskSuggestion : creates
-    AnthropicTaskSuggestionService --> AnthropicAPI : uses
-    AnthropicTaskSuggestionService --> TaskSuggestion : creates
-    
-    TaskSuggestionFactory --> TaskSuggestionService : creates
-    TodoStoreFactory --> TodoStore : creates
+    TaskSuggestion --> TaskInput : calls onTaskAdded
 ```
 
-## Architecture Principles
+## Implementation Gaps
 
-### SOLID Principles Applied
+### 1. Add Service Interface (Recommended)
+```typescript
+// src/lib/services/taskSuggestion.ts
+export interface TaskSuggestionService {
+  getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion>;
+}
 
-#### 1. Single Responsibility Principle (SRP)
-- **TodoApp**: Orchestrates the application and handles top-level events
-- **TaskInput**: Handles task creation and suggestion display
-- **ProjectCard**: Manages individual project display and collapsible behavior
-- **TaskList**: Renders and manages task interactions
-- **TodoStore**: Manages application state and data operations
+export class MockTaskSuggestionService implements TaskSuggestionService {
+  async getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion> {
+    // Current mockAIResponse logic
+  }
+}
+```
 
-#### 2. Open/Closed Principle (OCP)
-- **TaskSuggestionService**: Interface allows adding new suggestion providers without modifying existing code
-- **Component composition**: New components can be added without changing existing ones
+### 2. Add Factory Functions (Optional)
+```typescript
+// src/lib/factories/index.ts
+export function createTaskSuggestionService(): TaskSuggestionService {
+  return new MockTaskSuggestionService();
+}
+```
 
-#### 3. Liskov Substitution Principle (LSP)
-- **MockTaskSuggestionService** and **AnthropicTaskSuggestionService** are interchangeable
-- Both implement the same interface contract
+### 3. Future: Add Anthropic Service
+```typescript
+export class AnthropicTaskSuggestionService implements TaskSuggestionService {
+  async getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion> {
+    // Anthropic API integration
+  }
+}
+```
 
-#### 4. Interface Segregation Principle (ISP)
-- **TaskInputEvents** and **ProjectEvents** are focused, specific interfaces
-- Components only depend on the methods they actually use
-
-#### 5. Dependency Inversion Principle (DIP)
-- **TaskInput** depends on the abstraction (TaskSuggestionService) not concrete implementations
-- **TodoApp** depends on TodoStore abstraction, not specific state management details
 
 ### Component Communication Patterns
 

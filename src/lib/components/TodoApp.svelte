@@ -44,6 +44,14 @@
   function handleTaskDelete(projectId: string, taskId: string) {
     todoStore.deleteTask(projectId, taskId);
   }
+
+  function handleTaskEdit(projectId: string, taskId: string) {
+    todoStore.editTask(projectId, taskId);
+  }
+
+  function handleTaskSetPriority(projectId: string, taskId: string, priority: Task['priority']) {
+    todoStore.setPriority(projectId, taskId, priority);
+  }
 </script>
 
 <div class="max-w-2xl mx-auto p-6 space-y-4">
