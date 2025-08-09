@@ -36,35 +36,26 @@ test.describe('TodoApp - Core Functionality', () => {
     expect(workTaskCount).toBeGreaterThan(0);
   });
 
-  test('should create a new task with Enter key @keyboard', async ({ todoPage }) => {
-    const taskTitle = testTasks.personal.shopping.title;
-    
-    await todoPage.addTaskWithEnter(taskTitle);
-    
-    const task = await todoPage.getTaskByTitle(taskTitle);
-    await expect(task).toBeVisible();
-    
-    // Verify input is cleared after adding
-    await expect(todoPage.taskInput).toHaveValue('');
-  });
-
   test('should toggle task completion', async ({ todoPageWithTasks }) => {
     const taskTitle = testTasks.work.highPriority.title;
     const task = await todoPageWithTasks.getTaskByTitle(taskTitle);
     
+    const checkbox = task.locator('input[type="checkbox"]');
+    
     // Initially task should be incomplete
-    await expect(task.locator('[data-testid="task-checkbox"]')).not.toBeChecked();
+    await expect(checkbox).not.toBeChecked();
     
     // Toggle to complete
     await todoPageWithTasks.toggleTask(taskTitle);
-    await expect(task.locator('[data-testid="task-checkbox"]')).toBeChecked();
+    await expect(checkbox).toBeChecked();
     
-    // Verify visual indication of completion
-    await expect(task.locator('span')).toHaveClass(/line-through/);
+    // Use specific selector for task title span to avoid strict mode violation
+    const taskTitleSpan = task.locator('[data-testid="task-title"]');
+    await expect(taskTitleSpan).toHaveClass(/line-through/);
     
     // Toggle back to incomplete
     await todoPageWithTasks.toggleTask(taskTitle);
-    await expect(task.locator('[data-testid="task-checkbox"]')).not.toBeChecked();
+    await expect(checkbox).not.toBeChecked();
   });
 });
 

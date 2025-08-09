@@ -107,7 +107,10 @@
           
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <span class="text-sm font-medium {task.completed ? 'line-through text-gray-500' : 'text-gray-900'}">
+              <span 
+                data-testid="task-title"
+                class="text-sm font-medium {task.completed ? 'line-through text-gray-500' : 'text-gray-900'}"
+              >
                 {task.title}
               </span>
               <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium

@@ -48,7 +48,7 @@ export class TodoPage {
   }
 
   async acceptAISuggestion() {
-    await this.page.locator(selectors.addTaskButton).click();
+    await this.page.locator(selectors.acceptSuggestion).click();
   }
 
   async rejectAISuggestion() {
@@ -56,13 +56,14 @@ export class TodoPage {
   }
 
   async getTaskByTitle(title: string) {
-    // Use accessible role-based selector instead of data-testid
-    return this.page.locator(`listitem`).filter({ hasText: title });
+    // Use listitem role instead of missing data-testid
+    return this.page.getByRole('listitem').filter({ hasText: title });
   }
 
   async toggleTask(title: string) {
     const task = await this.getTaskByTitle(title);
-    await task.locator(selectors.taskCheckbox).click();
+    // Use actual checkbox selector instead of missing data-testid
+    await task.locator('input[type="checkbox"]').click();
   }
 
   async openTaskContextMenu(title: string) {
@@ -85,20 +86,21 @@ export class TodoPage {
     await this.page.locator(selectors[`priority${priority.charAt(0).toUpperCase() + priority.slice(1)}` as keyof typeof selectors]).click();
   }
 
-  async toggleProject(projectName: 'work' | 'personal') {
-    const header = projectName === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
-    await header.click();
+  async toggleProject(project: 'work' | 'personal') {
+    const projectHeader = project === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
+    await projectHeader.click();
   }
 
-  async getTaskCount(projectName: 'work' | 'personal'): Promise<number> {
-    const header = projectName === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
-    const countText = await header.locator(selectors.taskCount).textContent();
-    return parseInt(countText || '0');
+  async getTaskCount(project: 'work' | 'personal'): Promise<number> {
+    const projectHeader = project === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
+    const text = await projectHeader.textContent();
+    const match = text?.match(/(\d+) tasks/);
+    return match ? parseInt(match[1]) : 0;
   }
 
-  async isProjectExpanded(projectName: 'work' | 'personal'): Promise<boolean> {
-    const header = projectName === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
-    const expanded = await header.getAttribute('aria-expanded');
-    return expanded === 'true';
+  async isProjectExpanded(project: 'work' | 'personal'): Promise<boolean> {
+    const projectHeader = project === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
+    const text = await projectHeader.textContent();
+    return text?.includes('▼') || false;
   }
 }

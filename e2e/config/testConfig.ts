@@ -12,6 +12,7 @@ export const selectors = {
   addTaskButton: '[data-testid="add-here-button"]',
   taskItem: '[data-testid="task-item"]',
   taskCheckbox: '[data-testid="task-checkbox"]',
+  taskTitle: '[data-testid="task-title"]',
   taskMenuButton: '[data-testid="task-menu-button"]',
   
   // Project-related selectors
@@ -31,4 +32,5 @@ export const selectors = {
   priorityHigh: '[data-testid="priority-high"]',
   priorityMedium: '[data-testid="priority-medium"]',
   priorityLow: '[data-testid="priority-low"]',
+  priorityBadge: '[data-testid="priority-badge"]',
 } as const;
