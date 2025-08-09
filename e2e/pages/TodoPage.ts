@@ -69,7 +69,13 @@ export class TodoPage {
   }
 
   async openTaskContextMenu(title: string) {
+    // Ensure project is expanded before trying to interact with task
+    await this.ensureProjectExpanded(title);
+    
     const task = await this.getTaskByTitle(title);
+    
+    // Wait for task to be visible after expansion
+    await expect(task).toBeVisible();
     
     // Hover over the task container to reveal the menu button
     await task.hover();

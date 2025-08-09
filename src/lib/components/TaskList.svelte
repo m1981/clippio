@@ -81,61 +81,58 @@
 
 <svelte:window on:click={handleClickOutside} on:keydown={handleMenuKeydown} />
 
-<div class="border-t border-gray-200">
+<ul class="border-t border-gray-200 divide-y divide-gray-100" role="list">
   {#if tasks.length === 0}
-    <div class="p-4 text-center text-gray-500 text-sm">
+    <li class="p-4 text-center text-gray-500 text-sm">
       No tasks yet. Add one above!
-    </div>
+    </li>
   {:else}
-    <div class="divide-y divide-gray-100">
-      {#each tasks as task}
-        <div 
-          class="flex items-center gap-3 p-4 hover:bg-gray-50 group relative"
-          role="listitem"
-          tabindex="0"
-          oncontextmenu={(e) => handleTaskRightClick(task.id, e)}
-          onkeydown={(e) => handleTaskKeydown(task.id, e)}
-          aria-label="Task: {task.title}"
-        >
-          <input
-            type="checkbox"
-            checked={task.completed}
-            onchange={() => onTaskToggle(projectId, task.id)}
-            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-            aria-label="Mark task {task.completed ? 'incomplete' : 'complete'}"
-          />
-          
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span 
-                data-testid="task-title"
-                class="text-sm font-medium {task.completed ? 'line-through text-gray-500' : 'text-gray-900'}"
-              >
-                {task.title}
-              </span>
-              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+    {#each tasks as task}
+      <li 
+        class="flex items-center gap-3 p-4 hover:bg-gray-50 group relative"
+        tabindex="0"
+        oncontextmenu={(e) => handleTaskRightClick(task.id, e)}
+        onkeydown={(e) => handleTaskKeydown(task.id, e)}
+        aria-label="Task: {task.title}"
+      >
+        <input
+          type="checkbox"
+          checked={task.completed}
+          onchange={() => onTaskToggle(projectId, task.id)}
+          class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          aria-label="Mark task {task.completed ? 'incomplete' : 'complete'}"
+        />
+        
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span 
+              data-testid="task-title"
+              class="text-sm font-medium {task.completed ? 'line-through text-gray-500' : 'text-gray-900'}"
+            >
+              {task.title}
+            </span>
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
                          {task.priority === 'high' ? 'bg-red-100 text-red-800' : 
                            task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
                            'bg-gray-100 text-gray-800'}"
-                    aria-label="Priority: {task.priority}">
-                {task.priority}
-              </span>
-            </div>
+                  aria-label="Priority: {task.priority}">
+              {task.priority}
+            </span>
           </div>
-          
-          <button 
-            onclick={(e) => toggleDropdown(task.id, e)}
-            class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity"
-            aria-label="Open task menu for {task.title}"
-            aria-expanded={openDropdown === task.id}
-          >
-            <MoreVertical class="w-4 h-4 text-gray-500" />
-          </button>
         </div>
-      {/each}
-    </div>
+        
+        <button 
+          onclick={(e) => toggleDropdown(task.id, e)}
+          class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-200 transition-opacity"
+          aria-label="Open task menu for {task.title}"
+          aria-expanded={openDropdown === task.id}
+        >
+          <MoreVertical class="w-4 h-4 text-gray-500" />
+        </button>
+      </li>
+    {/each}
   {/if}
-</div>
+</ul>
 
 <!-- Context Menu (positioned absolutely) -->
 {#each tasks as task}
@@ -185,7 +182,7 @@
                  {task.priority === priority ? 'bg-blue-50 text-blue-700' : ''}"
           role="menuitem"
           aria-label="Set priority to {priority}"
-          aria-pressed={task.priority === priority}
+          aria-current={task.priority === priority ? 'true' : undefined}
         >
           <div class="w-2 h-2 rounded-full
                     {priority === 'high' ? 'bg-red-500' : 

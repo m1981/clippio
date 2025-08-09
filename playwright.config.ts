@@ -12,6 +12,11 @@ export default defineConfig({
 	timeout: 15000, // Test timeout: 15s (was 30s default)
 	expect: {
 		timeout: 3000, // Expect timeout: 3s (was 5s default)
+		toHaveScreenshot: {
+			threshold: 0.2,        // Default threshold
+			maxDiffPixels: 10,     // Lower default tolerance
+			animations: 'disabled', // Disable animations for consistency
+		},
 	},
 	
 	reporter: [

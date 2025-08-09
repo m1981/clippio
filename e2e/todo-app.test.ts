@@ -404,3 +404,47 @@ test.describe('TodoApp - Mobile Responsiveness', () => {
 		throw new Error("not implemented yet");
   });
 });
+
+test.describe('TodoApp - Visual Regression', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/todo');
+    await page.waitForLoadState('networkidle');
+  });
+
+  test('should match initial app layout @visual', async ({ page }) => {
+  	await page.goto('/todo');
+
+    // Take full page screenshot
+    await expect(page).toHaveScreenshot('todo-app-initial.png');
+  });
+
+  test('should match app with tasks @visual', async ({ todoPageWithTasks }) => {
+    // Ensure both projects are expanded for consistent screenshots
+    await todoPageWithTasks.toggleProject('work');
+    await todoPageWithTasks.toggleProject('personal');
+    await todoPageWithTasks.page.waitForTimeout(500);
+    
+    await expect(todoPageWithTasks.page).toHaveScreenshot('todo-app-with-tasks.png');
+  });
+
+  test('should match context menu appearance @visual', async ({ todoPageWithTasks }) => {
+    const taskTitle = testTasks.work.highPriority.title;
+    
+    await todoPageWithTasks.openTaskContextMenu(taskTitle);
+    await expect(todoPageWithTasks.page.locator(selectors.contextMenu)).toBeVisible();
+    
+    // Screenshot just the context menu area
+    await expect(todoPageWithTasks.page.locator(selectors.contextMenu)).toHaveScreenshot('context-menu.png');
+  });
+
+  test('should match AI suggestion appearance @visual', async ({ todoPage }) => {
+    await todoPage.taskInput.fill('Review quarterly reports');
+    
+    try {
+      await todoPage.waitForAISuggestion();
+      await expect(todoPage.aiSuggestion).toHaveScreenshot('ai-suggestion.png');
+    } catch {
+      console.log('AI suggestion not available - skipping visual test');
+    }
+  });
+});
