@@ -88,8 +88,9 @@
     </li>
   {:else}
     {#each tasks as task}
-      <li 
+      <div 
         class="flex items-center gap-3 p-4 hover:bg-gray-50 group relative"
+        role="listitem"
         tabindex="0"
         oncontextmenu={(e) => handleTaskRightClick(task.id, e)}
         onkeydown={(e) => handleTaskKeydown(task.id, e)}
@@ -129,7 +130,7 @@
         >
           <MoreVertical class="w-4 h-4 text-gray-500" />
         </button>
-      </li>
+      </div>
     {/each}
   {/if}
 </ul>
