@@ -57,8 +57,8 @@ export class TodoPage {
   }
 
   async getTaskByTitle(title: string) {
-    // Remove the expansion call from here to avoid double-expansion
-    return this.page.getByRole('listitem').filter({ hasText: title });
+    // Use role="button" since tasks are now interactive buttons, not list items
+    return this.page.getByRole('button').filter({ hasText: title });
   }
 
   async toggleTask(title: string) {
@@ -133,11 +133,10 @@ export class TodoPage {
   }
 
   async waitForTaskToAppear(title: string, timeout = 5000) {
-    // Only expand once, don't call getTaskByTitle which would expand again
     await this.ensureProjectExpanded(title);
     
-    // Get the task directly without additional expansion calls
-    const task = this.page.getByRole('listitem').filter({ hasText: title });
+    // Update to match the actual DOM structure
+    const task = this.page.getByRole('button').filter({ hasText: title });
     await expect(task).toBeVisible({ timeout });
     return task;
   }

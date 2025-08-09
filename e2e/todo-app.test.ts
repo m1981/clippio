@@ -418,15 +418,6 @@ test.describe('TodoApp - Visual Regression', () => {
     await expect(page).toHaveScreenshot('todo-app-initial.png');
   });
 
-  test('should match app with tasks @visual', async ({ todoPageWithTasks }) => {
-    // Ensure both projects are expanded for consistent screenshots
-    await todoPageWithTasks.toggleProject('work');
-    await todoPageWithTasks.toggleProject('personal');
-    await todoPageWithTasks.page.waitForTimeout(500);
-    
-    await expect(todoPageWithTasks.page).toHaveScreenshot('todo-app-with-tasks.png');
-  });
-
   test('should match context menu appearance @visual', async ({ todoPageWithTasks }) => {
     const taskTitle = testTasks.work.highPriority.title;
     

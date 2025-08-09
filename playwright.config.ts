@@ -53,6 +53,10 @@ export default defineConfig({
 			name: 'mobile-chrome',
 			use: { ...devices['Pixel 5'] },
 		},
+		{
+			name: 'iphone-11',
+			use: { ...devices['iPhone 11'] },
+		},
 	],
 
 	webServer: {
