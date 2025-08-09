@@ -69,6 +69,7 @@
       <button
         onclick={addToSuggestedProject}
         class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+        data-testid="add-here-button"
       >
         Add Here
       </button>

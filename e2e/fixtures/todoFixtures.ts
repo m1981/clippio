@@ -1,6 +1,7 @@
 import { test as baseTest } from '@playwright/test';
 import { TodoPage } from '../pages/TodoPage';
 import { testTasks } from '../testData/tasks';
+import { testConfig } from '../config/testConfig';
 
 type TodoFixtures = {
   todoPage: TodoPage;
@@ -18,10 +19,18 @@ export const test = baseTest.extend<TodoFixtures>({
     const todoPage = new TodoPage(page);
     await todoPage.goto();
     
-    // Add some test tasks for scenarios that need existing data
-    await todoPage.addTask(testTasks.work.highPriority.title);
-    await todoPage.addTask(testTasks.work.mediumPriority.title);
-    await todoPage.addTask(testTasks.personal.shopping.title);
+    // Wait for page to be ready before adding tasks
+    await page.waitForLoadState('networkidle');
+    
+    // Add test tasks with proper error handling
+    try {
+      await todoPage.addTask(testTasks.work.highPriority.title);
+      await todoPage.addTask(testTasks.work.mediumPriority.title);
+      await todoPage.addTask(testTasks.personal.shopping.title);
+    } catch (error) {
+      console.error('Failed to add test tasks:', error);
+      throw error;
+    }
     
     await use(todoPage);
   }

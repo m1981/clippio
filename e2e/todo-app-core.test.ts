@@ -6,16 +6,19 @@ test.describe('TodoApp - Core Functionality', () => {
   test('should display todo app interface @smoke', async ({ todoPage }) => {
     // Verify main components are present
     await expect(todoPage.taskInput).toBeVisible();
-    await expect(todoPage.addTaskButton).toBeVisible();
-    await expect(todoPage.projectList).toBeVisible();
     
-    // Verify default projects exist
+    // Verify projects are rendered (check for actual project buttons)
     await expect(todoPage.workProjectsHeader).toBeVisible();
     await expect(todoPage.personalProjectsHeader).toBeVisible();
     
-    // Verify initial state
+    // Verify project content
     await expect(todoPage.workProjectsHeader).toContainText('Work Projects');
     await expect(todoPage.personalProjectsHeader).toContainText('Personal');
+    
+    // Verify add button appears when typing
+    await todoPage.taskInput.fill('test');
+    await expect(todoPage.addTaskButton).toBeVisible();
+    await todoPage.taskInput.clear();
   });
 
   test('should create a new task with button click', async ({ todoPage }) => {

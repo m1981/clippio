@@ -16,7 +16,7 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
 		"test:e2e:mobile": "playwright test --project=mobile-chrome",
-		"test:e2e:quick": "playwright test --project=mobile-chrome --headed",
+		"test:e2e:quick": "playwright test --ui --project=mobile-chrome",
 		"test:e2e:debug": "playwright test --project=mobile-chrome --debug",
 		"db:push": "drizzle-kit push",
 		"db:migrate": "drizzle-kit migrate",

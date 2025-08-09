@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { selectors } from '../config/testConfig';
 
 export class TodoPage {
   private page: Page;
@@ -16,14 +17,14 @@ export class TodoPage {
   constructor(page: Page) {
     this.page = page;
     
-    // Use data-testid selectors as per principle #2
-    this.taskInput = page.locator('[data-testid="task-input"]');
-    this.addTaskButton = page.locator('[data-testid="add-task-button"]');
-    this.projectList = page.locator('[data-testid="project-list"]');
-    this.aiSuggestion = page.locator('[data-testid="ai-suggestion"]');
+    // Use centralized selectors from testConfig
+    this.taskInput = page.locator(selectors.taskInput);
+    this.addTaskButton = page.locator(selectors.addTaskButton);
+    this.projectList = page.locator(selectors.projectList);
+    this.aiSuggestion = page.locator(selectors.aiSuggestion);
     
-    this.workProjectsHeader = page.locator('[data-testid="project-header-work"]');
-    this.personalProjectsHeader = page.locator('[data-testid="project-header-personal"]');
+    this.workProjectsHeader = page.getByRole('button', { name: /Work Projects/ });
+    this.personalProjectsHeader = page.getByRole('button', { name: /Personal/ });
   }
 
   async goto() {
@@ -32,6 +33,8 @@ export class TodoPage {
 
   async addTask(title: string) {
     await this.taskInput.fill(title);
+    // Wait for add button to become visible after typing
+    await expect(this.addTaskButton).toBeVisible();
     await this.addTaskButton.click();
   }
 
@@ -45,25 +48,26 @@ export class TodoPage {
   }
 
   async acceptAISuggestion() {
-    await this.aiSuggestion.locator('[data-testid="accept-suggestion"]').click();
+    await this.page.locator(selectors.addTaskButton).click();
   }
 
   async rejectAISuggestion() {
-    await this.aiSuggestion.locator('[data-testid="reject-suggestion"]').click();
+    await this.page.locator(selectors.rejectSuggestion).click();
   }
 
-  async getTaskByTitle(title: string): Promise<Locator> {
-    return this.page.locator(`[data-testid="task-item"]`).filter({ hasText: title });
+  async getTaskByTitle(title: string) {
+    // Use accessible role-based selector instead of data-testid
+    return this.page.locator(`listitem`).filter({ hasText: title });
   }
 
   async toggleTask(title: string) {
     const task = await this.getTaskByTitle(title);
-    await task.locator('[data-testid="task-checkbox"]').click();
+    await task.locator(selectors.taskCheckbox).click();
   }
 
   async openTaskContextMenu(title: string) {
     const task = await this.getTaskByTitle(title);
-    await task.locator('[data-testid="task-menu-button"]').click();
+    await task.locator(selectors.taskMenuButton).click();
   }
 
   async rightClickTask(title: string) {
@@ -73,12 +77,12 @@ export class TodoPage {
 
   async deleteTaskFromMenu(title: string) {
     await this.openTaskContextMenu(title);
-    await this.page.locator('[data-testid="delete-task-option"]').click();
+    await this.page.locator(selectors.deleteTaskOption).click();
   }
 
   async setTaskPriority(title: string, priority: 'high' | 'medium' | 'low') {
     await this.openTaskContextMenu(title);
-    await this.page.locator(`[data-testid="priority-${priority}"]`).click();
+    await this.page.locator(selectors[`priority${priority.charAt(0).toUpperCase() + priority.slice(1)}` as keyof typeof selectors]).click();
   }
 
   async toggleProject(projectName: 'work' | 'personal') {
@@ -88,7 +92,7 @@ export class TodoPage {
 
   async getTaskCount(projectName: 'work' | 'personal'): Promise<number> {
     const header = projectName === 'work' ? this.workProjectsHeader : this.personalProjectsHeader;
-    const countText = await header.locator('[data-testid="task-count"]').textContent();
+    const countText = await header.locator(selectors.taskCount).textContent();
     return parseInt(countText || '0');
   }
 

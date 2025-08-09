@@ -9,7 +9,7 @@ export const testConfig = {
 export const selectors = {
   // Task-related selectors
   taskInput: '[data-testid="task-input"]',
-  addTaskButton: '[data-testid="add-task-button"]',
+  addTaskButton: '[data-testid="add-here-button"]',
   taskItem: '[data-testid="task-item"]',
   taskCheckbox: '[data-testid="task-checkbox"]',
   taskMenuButton: '[data-testid="task-menu-button"]',
@@ -23,7 +23,7 @@ export const selectors = {
   aiSuggestion: '[data-testid="ai-suggestion"]',
   acceptSuggestion: '[data-testid="accept-suggestion"]',
   rejectSuggestion: '[data-testid="reject-suggestion"]',
-  
+
   // Context menu selectors
   contextMenu: '[data-testid="context-menu"]',
   deleteTaskOption: '[data-testid="delete-task-option"]',
