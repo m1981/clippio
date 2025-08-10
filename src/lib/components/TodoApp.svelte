@@ -30,19 +30,30 @@
     console.log('🔴 TodoApp: handleTaskAdded called');
     console.log('🔴 Task:', task);
     console.log('🔴 ProjectId:', projectId);
-    console.log('🔴 Current projects:', todoStore.getProjects().map(p => ({ id: p.id, name: p.name })));
     
-    todoStore.addTask(task, projectId);
-    console.log('🔴 Store addTask called');
-    console.log('🔴 Updated projects:', todoStore.getProjects().map(p => ({ name: p.name, taskCount: p.tasks.length })));
+    const result = todoStore.addTask(task, projectId);
+    
+    if (!result.success) {
+      console.error('Failed to add task:', result.error.message);
+      // TODO: Show user-friendly error message
+      return;
+    }
+    
+    console.log('🔴 Task added successfully');
   }
   
   function handleTaskToggle(projectId: string, taskId: string) {
-    todoStore.toggleTask(projectId, taskId);
+    const result = todoStore.toggleTask(projectId, taskId);
+    if (!result.success) {
+      console.error('Failed to toggle task:', result.error.message);
+    }
   }
   
   function handleTaskDelete(projectId: string, taskId: string) {
-    todoStore.deleteTask(projectId, taskId);
+    const result = todoStore.deleteTask(projectId, taskId);
+    if (!result.success) {
+      console.error('Failed to delete task:', result.error.message);
+    }
   }
 
   function handleTaskEdit(projectId: string, taskId: string) {
@@ -50,7 +61,10 @@
   }
 
   function handleTaskSetPriority(projectId: string, taskId: string, priority: Task['priority']) {
-    todoStore.setPriority(projectId, taskId, priority);
+    const result = todoStore.setPriority(projectId, taskId, priority);
+    if (!result.success) {
+      console.error('Failed to set priority:', result.error.message);
+    }
   }
 </script>
 

@@ -23,9 +23,9 @@ export class TodoPage {
     this.projectList = page.locator(selectors.projectList);
     this.aiSuggestion = page.locator(selectors.aiSuggestion);
     
-    // Use role-based selectors (most resilient)
-    this.workProjectsHeader = page.getByRole('button', { name: /work projects/i });
-    this.personalProjectsHeader = page.getByRole('button', { name: /personal/i });
+    // Use actual data-testid values from DOM
+    this.workProjectsHeader = page.locator('[data-testid="project-header-work-projects"]');
+    this.personalProjectsHeader = page.locator('[data-testid="project-header-personal"]');
   }
 
   async goto() {

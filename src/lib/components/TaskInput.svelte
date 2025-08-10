@@ -33,10 +33,24 @@
     console.log('🟢 TaskInput: handleTaskAdded called');
     console.log('🟢 Task:', task);
     console.log('🟢 ProjectId:', projectId);
-    console.log('🟢 Available projects:', projects.map(p => p.name));
+    console.log('🟢 Available projects:', projects.map(p => `${p.name} (ID: ${p.id})`));
     
-    onTaskAdded(task, projectId);
-    console.log('🟢 Bubbled up to TodoApp');
+    // Debug the actual project structure
+    console.log('🟢 Full projects array:', projects);
+    
+    // Convert project name to ID if needed
+    const project = projects.find(p => p.name === projectId || p.id === projectId);
+    
+    if (!project) {
+      console.error('🟢 Project not found:', projectId);
+      console.error('🟢 Available projects:', projects);
+      return;
+    }
+    
+    const actualProjectId = project.id;
+    console.log('🟢 Resolved project ID:', actualProjectId);
+    
+    onTaskAdded(task, actualProjectId);
     
     newTaskTitle = '';
     suggestion = null;
