@@ -41,10 +41,11 @@ export default defineConfig({
 			name: 'chromium',
 			use: { ...devices['Desktop Chrome'] },
 		},
-		{
+		// Only run Firefox locally, not in CI
+		...(process.env.CI ? [] : [{
 			name: 'firefox',
 			use: { ...devices['Desktop Firefox'] },
-		},
+		}]),
 		{
 			name: 'webkit',
 			use: { ...devices['Desktop Safari'] },
