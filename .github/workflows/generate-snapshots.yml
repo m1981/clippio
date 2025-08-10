@@ -1,12 +1,7 @@
 name: Generate Visual Snapshots
 
 on:
-  workflow_dispatch: # Manual trigger
-  push:
-    paths:
-      - 'src/**'
-      - 'e2e/**'
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   generate-snapshots:
