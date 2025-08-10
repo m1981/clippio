@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
+		"sum": "fd '\\.(ts|svelte)' --type f | exclude.js | rsum",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",

@@ -1,0 +1,21 @@
+# Directories to ignore
+node_modules/
+.svelte-kit/
+.git/
+
+# Test files
+*.test.*
+*.spec.*
+test/
+
+# Other files to ignore
+.DS_Store
+.env
+vite.config.ts
+vitest-setup-client.ts
+vitest.shims.d.ts
+**/demo/*
+e2e/*
+playwright.config.ts
+drizzle.config.ts
+src/app.d.ts
