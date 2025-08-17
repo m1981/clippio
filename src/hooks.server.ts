@@ -10,16 +10,16 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	// For now, set locals to null (no authentication)
 	event.locals.user = null;
 	event.locals.session = null;
-	
+
 	return resolve(event);
 };
 
 export const handle: Handle = handleAuth;
 
-export const handleError: HandleServerError = async ({ error, event, status, message }) => {
+export const handleError: HandleServerError = async ({ error }) => {
 	console.error('Server error:', error);
-	
+
 	return {
-		message: import.meta.env.DEV ? message : 'Internal server error'
+		message: 'Something went wrong'
 	};
 };

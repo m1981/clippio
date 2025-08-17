@@ -4,7 +4,6 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/experimental-addon-test/vitest-plugin';
 const dirname =
 	typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
@@ -27,10 +26,10 @@ export default defineConfig({
 				plugins: [svelteTesting()],
 				test: {
 					name: 'client',
-					environment: 'jsdom',
+					environment: 'happy-dom',
 					clearMocks: true,
-					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**'],
+					include: ['src/**/*.svelte.{test,spec}.{js,ts}', 'src/**/*{test,spec}.{js,ts}'],
+					exclude: ['src/lib/server/**', 'src/**/*.server.{test,spec}.{js,ts}'],
 					setupFiles: ['./vitest-setup-client.ts']
 				}
 			},
@@ -39,30 +38,8 @@ export default defineConfig({
 				test: {
 					name: 'server',
 					environment: 'node',
-					include: ['src/**/*.{test,spec}.{js,ts}'],
+					include: ['src/**/*.server.{test,spec}.{js,ts}', 'src/lib/server/**/*.{test,spec}.{js,ts}'],
 					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
-				}
-			},
-			{
-				extends: true,
-				plugins: [
-					storybookTest({
-						configDir: path.join(dirname, '.storybook')
-					})
-				],
-				test: {
-					name: 'storybook',
-					browser: {
-						enabled: true,
-						headless: true,
-						provider: 'playwright',
-						instances: [
-							{
-								browser: 'chromium'
-							}
-						]
-					},
-					setupFiles: ['.storybook/vitest.setup.ts']
 				}
 			}
 		]
