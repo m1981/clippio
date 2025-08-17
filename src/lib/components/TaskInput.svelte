@@ -12,20 +12,26 @@
 
 	let newTaskTitle = $state('');
 	let suggestion = $state<TaskSuggestion | null>(null);
+	let isLoadingSuggestion = $state(false);
+	let suggestionError = $state<string | null>(null);
 
-	const taskSuggestionService = createTaskSuggestionService();
+	const suggestionService = createTaskSuggestionService();
 
 	async function handleInput() {
 		if (newTaskTitle.trim().length > 3) {
-			const result = await taskSuggestionService.getSuggestion(newTaskTitle, projects);
+			isLoadingSuggestion = true;
+			suggestionError = null;
+			
+			const result = await suggestionService.getSuggestion(newTaskTitle, projects);
+			
 			if (result.success) {
 				suggestion = result.data;
 			} else {
-				console.error('Failed to get suggestion:', result.error);
+				suggestionError = result.error.message;
 				suggestion = null;
 			}
-		} else {
-			suggestion = null;
+			
+			isLoadingSuggestion = false;
 		}
 	}
 

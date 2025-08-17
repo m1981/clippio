@@ -163,6 +163,17 @@ export class TodoStore implements ProjectReader, TaskWriter {
 		task.title = newTitle;
 		return { success: true, data: undefined };
 	}
+
+	// Add persistence methods
+	async saveToDatabase() {
+		// TODO: Implement database save
+		console.log('Saving to database:', this.projects);
+	}
+
+	async loadFromDatabase() {
+		// TODO: Implement database load
+		console.log('Loading from database');
+	}
 }
 
 // Environment-based factory pattern following dependency injection

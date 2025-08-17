@@ -94,19 +94,7 @@ export class AnthropicTaskSuggestionService implements TaskSuggestionService {
 
 // Type-safe factory with environment switching
 export function createTaskSuggestionService(): TaskSuggestionService {
-	const environment = import.meta.env.MODE;
-
-	switch (environment) {
-		case 'development':
-		case 'test': {
-			return new MockTaskSuggestionService();
-		}
-		case 'production': {
-			// Return production service when implemented
-			return new MockTaskSuggestionService();
-		}
-		default: {
-			return new MockTaskSuggestionService();
-		}
-	}
+	return import.meta.env.DEV 
+		? new MockTaskSuggestionService()
+		: new AnthropicTaskSuggestionService();
 }
