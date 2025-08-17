@@ -130,13 +130,13 @@ test.describe('TodoApp - Context Menu', () => {
 		await expect(contextMenu).toBeVisible();
 	});
 
-	test('should close context menu when clicking outside', async ({ _page }) => {
+	test('should close context menu when clicking outside', async ({ todoPageWithTasks }) => {
 		// TODO: Open context menu
 		// TODO: Click outside menu area
 		// TODO: Verify menu disappears
 	});
 
-	test('should edit task from context menu', async ({ _page }) => {
+	test('should edit task from context menu', async ({ todoPageWithTasks }) => {
 		// TODO: Open context menu
 		// TODO: Click "Edit task" option
 		// TODO: Verify edit mode is activated
@@ -158,14 +158,14 @@ test.describe('TodoApp - Context Menu', () => {
 		await expect(priorityBadge).toHaveClass(/bg-red-100/);
 	});
 
-	test('should mark task complete from context menu', async ({ _page }) => {
+	test('should mark task complete from context menu', async ({ todoPageWithTasks }) => {
 		// TODO: Open context menu on incomplete task
 		// TODO: Click "Mark complete" option
 		// TODO: Verify task shows as completed
 		// TODO: Verify context menu closes
 	});
 
-	test('should mark task incomplete from context menu', async ({ _page }) => {
+	test('should mark task incomplete from context menu', async ({ todoPageWithTasks }) => {
 		// TODO: Create completed task
 		// TODO: Open context menu
 		// TODO: Click "Mark incomplete" option
@@ -252,7 +252,7 @@ test.describe('TodoApp - Project Management', () => {
 		await page.goto('/todo');
 	});
 
-	test('should display default projects', async ({ _page }) => {
+	test('should display default projects', async ({ todoPage }) => {
 		// TODO: Verify "Work Projects" appears
 		// TODO: Verify "Personal" appears
 		// TODO: Check project expand/collapse state
@@ -298,7 +298,7 @@ test.describe('TodoApp - Keyboard Navigation', () => {
 		await page.goto('/todo');
 	});
 
-	test('should add task with Enter key', async ({ page }) => {
+	test('should add task with Enter key', async ({ todoPage }) => {
 		// TODO: Focus task input field
 		// TODO: Type task title
 		// TODO: Press Enter key
@@ -307,7 +307,7 @@ test.describe('TodoApp - Keyboard Navigation', () => {
 		throw new Error('not implemented yet');
 	});
 
-	test('should navigate tasks with arrow keys', async ({ page }) => {
+	test('should navigate tasks with arrow keys', async ({ todoPageWithTasks }) => {
 		// TODO: Create multiple tasks
 		// TODO: Focus first task
 		// TODO: Use arrow keys to navigate
@@ -315,7 +315,7 @@ test.describe('TodoApp - Keyboard Navigation', () => {
 		throw new Error('not implemented yet');
 	});
 
-	test('should open context menu with keyboard', async ({ page }) => {
+	test('should open context menu with keyboard', async ({ todoPageWithTasks }) => {
 		// TODO: Focus on task
 		// TODO: Press context menu key or Shift+F10
 		// TODO: Verify context menu opens
@@ -323,7 +323,7 @@ test.describe('TodoApp - Keyboard Navigation', () => {
 		throw new Error('not implemented yet');
 	});
 
-	test('should close context menu with Escape', async ({ page }) => {
+	test('should close context menu with Escape', async ({ todoPageWithTasks }) => {
 		// TODO: Open context menu
 		// TODO: Press Escape key
 		// TODO: Verify menu closes
@@ -336,7 +336,7 @@ test.describe('TodoApp - Accessibility', () => {
 		await page.goto('/todo');
 	});
 
-	test('should have proper ARIA labels', async ({ page }) => {
+	test('should have proper ARIA labels', async ({ todoPage }) => {
 		// TODO: Check task checkboxes have aria-label
 		// TODO: Check context menu buttons have aria-label
 		// TODO: Check project headers have aria-expanded
@@ -344,14 +344,14 @@ test.describe('TodoApp - Accessibility', () => {
 		throw new Error('not implemented yet');
 	});
 
-	test('should support high contrast mode', async ({ page }) => {
+	test('should support high contrast mode', async ({ todoPage }) => {
 		// TODO: Enable high contrast mode
 		// TODO: Verify all elements remain visible
 		// TODO: Check priority badges have sufficient contrast
 		throw new Error('not implemented yet');
 	});
 
-	test('should work with screen reader', async ({ page }) => {
+	test('should work with screen reader', async ({ todoPage }) => {
 		// TODO: Navigate with screen reader commands
 		// TODO: Verify task content is announced
 		// TODO: Verify state changes are announced
@@ -364,7 +364,7 @@ test.describe('TodoApp - Data Persistence', () => {
 		await page.goto('/todo');
 	});
 
-	test('should persist tasks after page reload', async ({ page }) => {
+	test('should persist tasks after page reload', async ({ todoPage }) => {
 		// TODO: Create several tasks
 		// TODO: Set different priorities
 		// TODO: Complete some tasks
@@ -373,7 +373,7 @@ test.describe('TodoApp - Data Persistence', () => {
 		throw new Error('not implemented yet');
 	});
 
-	test('should handle storage errors gracefully', async ({ page }) => {
+	test('should handle storage errors gracefully', async ({ todoPage }) => {
 		// TODO: Mock storage failure
 		// TODO: Attempt to create task
 		// TODO: Verify error handling
@@ -388,14 +388,14 @@ test.describe('TodoApp - Mobile Responsiveness', () => {
 		await page.goto('/todo');
 	});
 
-	test('should display properly on mobile', async ({ page }) => {
+	test('should display properly on mobile', async ({ todoPage }) => {
 		// TODO: Verify layout adapts to mobile
 		// TODO: Check touch targets are adequate size
 		// TODO: Verify text remains readable
 		throw new Error('not implemented yet');
 	});
 
-	test('should handle touch interactions', async ({ page }) => {
+	test('should handle touch interactions', async ({ todoPage }) => {
 		// TODO: Test tap to toggle tasks
 		// TODO: Test long press for context menu
 		// TODO: Test swipe gestures if implemented

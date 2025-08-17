@@ -39,7 +39,7 @@ jobs:
         run: pnpm run check
 
       - name: Run linting
-        run: pnpm run lint
+        run: pnpm run lint_ci
 
   test:
     runs-on: ubuntu-latest
