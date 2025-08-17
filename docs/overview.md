@@ -3,6 +3,7 @@
 ## Core Requirements
 
 ### Functional Requirements
+
 - **Task Management**: Create, edit, complete, delete tasks with priority levels
 - **Project Organization**: Group tasks into collapsible projects with task counts
 - **AI Categorization**: Auto-suggest project placement using Claude API
@@ -10,6 +11,7 @@
 - **Responsive UI**: Mobile-first design with touch/keyboard support
 
 ### Non-Functional Requirements
+
 - **Performance**: <100ms UI responses, debounced AI calls
 - **Reliability**: Graceful AI fallback, optimistic updates
 - **Accessibility**: ARIA compliance, keyboard navigation
@@ -30,25 +32,25 @@ Testing: Playwright (E2E) + Vitest (unit) + Storybook
 
 ```typescript
 interface Task {
-  id: string;
-  title: string;
-  completed: boolean;
-  priority: 'low' | 'medium' | 'high';
-  dueDate?: string;
+	id: string;
+	title: string;
+	completed: boolean;
+	priority: 'low' | 'medium' | 'high';
+	dueDate?: string;
 }
 
 interface Project {
-  id: string;
-  name: string;
-  tasks: Task[];
-  open: boolean; // collapse state
+	id: string;
+	name: string;
+	tasks: Task[];
+	open: boolean; // collapse state
 }
 
 interface TaskSuggestion {
-  suggestedProject: string;
-  confidence: number;
-  reasoning: string;
-  alternatives: string[];
+	suggestedProject: string;
+	confidence: number;
+	reasoning: string;
+	alternatives: string[];
 }
 ```
 
@@ -77,18 +79,21 @@ TodoApp (orchestrator)
 ## User Interactions
 
 ### Task Creation Flow
+
 1. Type task title (3+ chars triggers AI)
 2. AI suggests project + confidence score
 3. Accept/reject suggestion or manual select
 4. Task added with visual feedback
 
 ### Context Menu Actions
+
 - Edit task title
 - Toggle completion
 - Set priority (high/medium/low)
 - Delete task
 
 ### Project Management
+
 - Collapse/expand projects
 - View task counts
 - Visual priority indicators
@@ -96,6 +101,7 @@ TodoApp (orchestrator)
 ## Development Standards
 
 ### Code Organization
+
 ```
 src/
 ├── lib/
@@ -107,10 +113,10 @@ src/
 └── app.html           # Root template
 ```
 
-
 ## Implementation Status
 
 ### ✅ Complete
+
 - Core CRUD operations
 - AI integration with fallback
 - Responsive design
@@ -118,9 +124,7 @@ src/
 - Collapsible projects
 
 ### 🔄 In Progress
+
 - Database persistence (currently in-memory)
 - User authentication integration
 - Advanced AI context awareness
-
-
-

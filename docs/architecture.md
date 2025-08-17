@@ -1,4 +1,3 @@
-
 # TodoApp Architecture
 
 This document describes the architecture of the TodoApp application, following SOLID principles and SvelteKit best practices.
@@ -15,8 +14,9 @@ The application is structured using a layered architecture with clear separation
 ## Current Implementation Status
 
 ### ✅ Implemented Components
+
 - **TodoApp**: Main orchestrator ✓
-- **TaskInput**: Task creation with AI suggestions ✓  
+- **TaskInput**: Task creation with AI suggestions ✓
 - **ProjectList**: Renders project list ✓
 - **ProjectHeader**: Project header with toggle ✓
 - **TaskList**: Task rendering and interactions ✓
@@ -24,12 +24,14 @@ The application is structured using a layered architecture with clear separation
 - **TodoStore**: State management ✓
 
 ### ⚠️ Simplified from Architecture
+
 - **No Factory Pattern**: Direct instantiation used for simplicity
 - **No Service Interface**: Mock function used instead of service classes
 - **No Melt UI**: Replaced with simple onclick handlers for reliability
 - **No ProjectCard**: ProjectList directly manages header/tasks
 
-### ❌ Not Yet Implemented  
+### ❌ Not Yet Implemented
+
 - **TaskSuggestionService Interface**: Should be added for extensibility
 - **AnthropicTaskSuggestionService**: Planned for production AI integration
 - **Factory Functions**: Could be added for better testability
@@ -91,59 +93,62 @@ classDiagram
     TodoApp --> TodoStore : uses
     TodoApp --> TaskInput : renders
     TodoApp --> ProjectList : renders
-    
+
     TaskInput --> TaskSuggestion : renders
     TaskInput --> TodoApp : calls onTaskAdded
-    
+
     ProjectList --> ProjectHeader : renders
     ProjectList --> TaskList : renders
-    
+
     TaskSuggestion --> TaskInput : calls onTaskAdded
 ```
 
 ## Implementation Gaps
 
 ### 1. Add Service Interface (Recommended)
+
 ```typescript
 // src/lib/services/taskSuggestion.ts
 export interface TaskSuggestionService {
-  getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion>;
+	getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion>;
 }
 
 export class MockTaskSuggestionService implements TaskSuggestionService {
-  async getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion> {
-    // Current mockAIResponse logic
-  }
+	async getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion> {
+		// Current mockAIResponse logic
+	}
 }
 ```
 
 ### 2. Add Factory Functions (Optional)
+
 ```typescript
 // src/lib/factories/index.ts
 export function createTaskSuggestionService(): TaskSuggestionService {
-  return new MockTaskSuggestionService();
+	return new MockTaskSuggestionService();
 }
 ```
 
 ### 3. Future: Add Anthropic Service
+
 ```typescript
 export class AnthropicTaskSuggestionService implements TaskSuggestionService {
-  async getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion> {
-    // Anthropic API integration
-  }
+	async getSuggestion(title: string, projects: Project[]): Promise<TaskSuggestion> {
+		// Anthropic API integration
+	}
 }
 ```
-
 
 ### Component Communication Patterns
 
 #### Parent-Child Communication
+
 ```mermaid
 sequenceDiagram
     participant TodoApp
     participant TaskInput
     participant TaskSuggestionComponent
-    
+
     TodoApp->>TaskInput: Pass projects prop
     TaskInput->>TaskSuggestionComponent: Pass suggestion data
     TaskSuggestionComponent->>TaskInput: Trigger onTaskAdded callback
@@ -151,17 +156,17 @@ sequenceDiagram
 ```
 
 #### Service Layer Integration
+
 ```mermaid
 sequenceDiagram
     participant TaskInput
     participant TaskSuggestionFactory
     participant MockService
     participant TodoStore
-    
+
     TaskInput->>TaskSuggestionFactory: createTaskSuggestion()
     TaskSuggestionFactory->>MockService: getSuggestion()
     MockService-->>TaskSuggestionFactory: TaskSuggestion
     TaskSuggestionFactory-->>TaskInput: TaskSuggestion
     TaskInput->>TodoStore: addTask()
 ```
-

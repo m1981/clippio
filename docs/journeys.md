@@ -3,9 +3,11 @@
 ## Journey 1: First-Time User Discovery
 
 ### Context
+
 New user visits the TodoApp for the first time, exploring core functionality.
 
 ### Journey Steps
+
 1. **Landing** → User opens `/todo` and sees demo data
    - 2 projects visible: "Work Projects" (4 tasks), "Personal" (3 tasks)
    - Mix of completed/incomplete tasks with different priorities
@@ -33,6 +35,7 @@ New user visits the TodoApp for the first time, exploring core functionality.
    - Ready for regular usage
 
 ### Key Success Metrics
+
 - Time to first task creation: <30 seconds
 - AI suggestion acceptance rate: >70%
 - Context menu discovery: <2 minutes
@@ -42,9 +45,11 @@ New user visits the TodoApp for the first time, exploring core functionality.
 ## Journey 2: Daily Task Management
 
 ### Context
+
 Regular user managing daily work and personal tasks efficiently.
 
 ### Journey Steps
+
 1. **Morning Planning** → User adds multiple tasks quickly
    - "Review quarterly reports" → AI suggests "Work Projects"
    - "Call dentist" → AI suggests "Personal"
@@ -72,6 +77,7 @@ Regular user managing daily work and personal tasks efficiently.
    - Adds tomorrow's tasks before closing
 
 ### Key Success Metrics
+
 - Tasks created per session: 5-8
 - AI suggestion accuracy: >80%
 - Task completion rate: >60%
@@ -81,9 +87,11 @@ Regular user managing daily work and personal tasks efficiently.
 ## Journey 3: Mobile User on the Go
 
 ### Context
+
 User managing tasks on mobile device during commute and breaks.
 
 ### Journey Steps
+
 1. **Commute Task Entry** → User adds tasks on phone
    - Touch-friendly input field
    - AI suggestions appear quickly
@@ -106,6 +114,7 @@ User managing tasks on mobile device during commute and breaks.
    - No data loss during network interruptions
 
 ### Key Success Metrics
+
 - Touch target accessibility: 44px minimum
 - Mobile task completion time: <5 seconds
 - Offline functionality: 100% task operations
@@ -115,9 +124,11 @@ User managing tasks on mobile device during commute and breaks.
 ## Journey 4: Power User Workflow
 
 ### Context
+
 Experienced user leveraging advanced features for complex project management.
 
 ### Journey Steps
+
 1. **Bulk Task Creation** → User adds many tasks efficiently
    - Rapid task entry with AI assistance
    - Keyboard shortcuts for quick navigation
@@ -140,6 +151,7 @@ Experienced user leveraging advanced features for complex project management.
    - Maximizes productivity with efficient habits
 
 ### Key Success Metrics
+
 - Tasks per minute: >2
 - Keyboard navigation coverage: 100%
 - Advanced feature adoption: >80%
@@ -149,9 +161,11 @@ Experienced user leveraging advanced features for complex project management.
 ## Journey 5: Error Recovery and Edge Cases
 
 ### Context
+
 User encounters various error conditions and system limitations.
 
 ### Journey Steps
+
 1. **AI Service Unavailable** → User adapts to fallback
    - Types task title, no AI suggestion appears
    - Manual project selector shows instead
@@ -178,6 +192,7 @@ User encounters various error conditions and system limitations.
    - Memory usage optimized for long sessions
 
 ### Key Success Metrics
+
 - Error recovery success rate: >95%
 - User frustration incidents: <5%
 - Data loss prevention: 100%
@@ -187,9 +202,11 @@ User encounters various error conditions and system limitations.
 ## Journey 6: Cross-Device Continuity
 
 ### Context
+
 User switches between desktop and mobile devices throughout the day.
 
 ### Journey Steps
+
 1. **Desktop Morning Setup** → User plans day on computer
    - Creates tasks with full keyboard and AI assistance
    - Organizes projects with drag-and-drop (future feature)
@@ -211,6 +228,7 @@ User switches between desktop and mobile devices throughout the day.
    - No learning curve between devices
 
 ### Key Success Metrics
+
 - Cross-device sync accuracy: 100%
 - Feature parity: >95%
 - User experience consistency: High satisfaction
@@ -220,17 +238,21 @@ User switches between desktop and mobile devices throughout the day.
 ## Common Pain Points and Solutions
 
 ### Pain Point: AI Suggestions Incorrect
+
 **Solution**: Easy rejection with manual selection, AI learns from corrections
 
 ### Pain Point: Too Many Tasks Overwhelming
+
 **Solution**: Project collapse, priority filtering, visual organization
 
 ### Pain Point: Mobile Context Menu Discovery
+
 **Solution**: Three-dots button, touch-friendly interactions, visual cues
 
 ### Pain Point: Accidental Task Deletion
+
 **Solution**: Confirmation dialogs, undo functionality (planned), data persistence
 
 ### Pain Point: Slow AI Response
-**Solution**: Loading states, debounced input, cached suggestions, fallback options
 
+**Solution**: Loading states, debounced input, cached suggestions, fallback options

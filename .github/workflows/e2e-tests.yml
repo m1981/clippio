@@ -1,9 +1,9 @@
 name: E2E Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   e2e-tests:
@@ -11,7 +11,7 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.54.1-jammy
     strategy:
-      fail-fast: false  # This prevents cancellation
+      fail-fast: false # This prevents cancellation
       matrix:
         test-suite: [basic, visual]
     steps:
@@ -20,10 +20,10 @@ jobs:
         with:
           version: 10.4.1
       - run: PNPM_FROZEN_LOCKFILE=true pnpm install
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Build application
         run: pnpm run build
         env:
@@ -54,7 +54,7 @@ jobs:
           name: playwright-report-${{ matrix.test-suite }}
           path: playwright-report/
           retention-days: 30
-      
+
       - name: Upload JUnit results
         uses: actions/upload-artifact@v4
         if: always()
