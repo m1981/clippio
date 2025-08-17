@@ -178,7 +178,7 @@
       
       {#each ['high', 'medium', 'low'] as priority}
         <button
-          onclick={() => setPriority(task.id, priority)}
+          onclick={() => setPriority(task.id, priority as Task['priority'])}
           class="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100
                  {task.priority === priority ? 'bg-blue-50 text-blue-700' : ''}"
           role="menuitem"

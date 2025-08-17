@@ -1,10 +1,11 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { anthropic } from '$lib/server/anthropic';
+import type { TaskCategorizationRequest } from '$lib/types/api';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { taskTitle, existingProjects, context } = await request.json();
+    const { taskTitle, existingProjects, context }: TaskCategorizationRequest = await request.json();
     
     // Validate input
     if (!taskTitle?.trim()) {
@@ -14,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await anthropic.messages.create({
       model: "claude-3-7-sonnet-20250219",
       max_tokens: 1000,
-      temperature: 0.3, // Lower for consistent categorization
+      temperature: 0.3,
       system: `You are a task categorization assistant. Analyze task titles and suggest the most appropriate project category.
 
 Available projects: ${existingProjects?.map(p => p.name).join(', ') || 'Work, Personal, Other'}

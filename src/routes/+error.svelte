@@ -12,8 +12,8 @@
             </h2>
             <p class="text-gray-600 mb-6">{$page.error?.message}</p>
             
-            {#if dev && $page.error?.errorId}
-                <p class="text-xs text-gray-400 mb-4">Error ID: {$page.error.errorId}</p>
+            {#if dev && $page.error}
+                <p class="text-xs text-gray-400 mb-4">Error: {$page.error.message}</p>
             {/if}
             
             <a 

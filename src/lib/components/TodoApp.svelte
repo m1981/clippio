@@ -57,7 +57,9 @@
   }
 
   function handleTaskEdit(projectId: string, taskId: string) {
-    todoStore.editTask(projectId, taskId);
+    // For now, just trigger edit mode - the actual editing happens in the component
+    // TODO: Implement inline editing or modal
+    console.log('Edit task:', projectId, taskId);
   }
 
   function handleTaskSetPriority(projectId: string, taskId: string, priority: Task['priority']) {
@@ -66,19 +68,24 @@
       console.error('Failed to set priority:', result.error.message);
     }
   }
+
+  // Convert readonly to mutable for component props
+  const projects = $derived([...todoStore.getProjects()]);
 </script>
 
 <div class="max-w-2xl mx-auto p-6 space-y-4">
   <h1 class="text-2xl font-bold text-gray-900">Todo Projects</h1>
   
   <TaskInput 
-    projects={todoStore.getProjects()} 
+    projects={projects} 
     onTaskAdded={handleTaskAdded} 
   />
   
   <ProjectList 
-    projects={todoStore.getProjects()}
+    projects={projects}
     onTaskToggle={handleTaskToggle}
     onTaskDelete={handleTaskDelete}
+    onTaskEdit={handleTaskEdit}
+    onTaskSetPriority={handleTaskSetPriority}
   />
 </div>

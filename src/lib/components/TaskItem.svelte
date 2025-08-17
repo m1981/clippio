@@ -1,3 +1,15 @@
+<script lang="ts">
+  import type { Task } from '$lib/types';
+  
+  interface Props {
+    task: Task;
+    projectId: string;
+    onTaskToggle: (projectId: string, taskId: string) => void;
+  }
+  
+  let { task, projectId, onTaskToggle }: Props = $props();
+</script>
+
 <li data-testid="task-item" role="listitem">
   <input
     type="checkbox"

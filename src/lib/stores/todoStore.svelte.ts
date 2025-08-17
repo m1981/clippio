@@ -16,6 +16,7 @@ interface TaskWriter {
   toggleTask(projectId: string, taskId: string): Result<void>;
   deleteTask(projectId: string, taskId: string): Result<void>;
   setPriority(projectId: string, taskId: string, priority: Task['priority']): Result<void>;
+  editTask(projectId: string, taskId: string, newTitle: string): Result<void>;
 }
 
 // Store configuration for dependency injection
@@ -139,6 +140,27 @@ export class TodoStore implements ProjectReader, TaskWriter {
     }
 
     task.priority = priority;
+    return { success: true, data: undefined };
+  }
+
+  editTask(projectId: string, taskId: string, newTitle: string): Result<void> {
+    const project = this.projects.find(p => p.id === projectId);
+    if (!project) {
+      return {
+        success: false,
+        error: new Error(`Project with ID "${projectId}" not found`)
+      };
+    }
+
+    const task = project.tasks.find(t => t.id === taskId);
+    if (!task) {
+      return {
+        success: false,
+        error: new Error(`Task with ID "${taskId}" not found`)
+      };
+    }
+
+    task.title = newTitle;
     return { success: true, data: undefined };
   }
 }

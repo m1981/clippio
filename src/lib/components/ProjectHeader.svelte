@@ -9,9 +9,9 @@
   
   let { project, isOpen, onToggle }: Props = $props();
   
-  // For more complex derived logic, use $derived.by()
+  // Generate slug from project name
   let testId = $derived.by(() => {
-    const slug = project.slug || project.name.toLowerCase().replace(/\s+/g, '-');
+    const slug = project.name.toLowerCase().replace(/\s+/g, '-');
     return `project-header-${slug}`;
   });
 </script>

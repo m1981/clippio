@@ -1,6 +1,6 @@
 export const testConfig = {
-  baseUrl: process.env.BASE_URL || 'http://localhost:4173',
-  apiUrl: process.env.API_URL || 'http://localhost:4173/api',
+  baseUrl: process.env.BASE_URL || 'http://localhost:5173',
+  apiUrl: process.env.API_URL || 'http://localhost:5173/api',
   defaultTimeout: parseInt(process.env.DEFAULT_TIMEOUT || '30000'),
   aiSuggestionTimeout: parseInt(process.env.AI_TIMEOUT || '5000'),
   retryAttempts: parseInt(process.env.RETRY_ATTEMPTS || '3'),
